@@ -77,6 +77,44 @@ void removerConta(int numero){
     } 
 }
 
+void depositar(int numero, int senha, float valor){
+    cont * aux = inicio;
+    while ((aux->numero != numero) && (aux != NULL)){
+        aux = aux->prox;
+    }
+    if (aux == NULL){
+        printf("Conta nao encontrada.\n");
+        printf("\n");
+    }else if(aux->senha != senha){
+        printf("Senha Invalida.\n");
+        printf("\n");
+    }else {
+        aux->saldo = aux->saldo + valor;
+        printf("%.2f depositados.\n", valor);
+        printf("\n");
+    }
+}
+
+void sacar(int numero, int senha, float valor){
+    cont * aux = inicio;
+    while ((aux->numero != numero) && (aux != NULL)){
+        aux = aux->prox;
+    }
+    if (aux == NULL){
+        printf("Conta nao encontrada.\n");
+        printf("\n");
+    }else if(aux->senha != senha){
+        printf("Senha Invalida.\n");
+        printf("\n");
+    }else if (valor > aux->saldo){
+        printf("Saldo Insuficiente.\n");
+    }else {
+        aux->saldo = aux->saldo - valor;
+        printf("%.2f sacados.\n", valor);
+        printf("\n");
+    }
+}
+
 void visualizar(){
     printf("Imprimindo a Lista\n");
 
@@ -106,6 +144,10 @@ int main(){
     visualizar();
     removerConta(53030);
     visualizar();
-
+    depositar(553030, 1232, 33.90);
+    depositar(553030, 1234, 33.90);
+    visualizar();
+    sacar(553030, 1234, 1133.90);
+    sacar(553030, 1234, 33.90);
     return 0;
 }
