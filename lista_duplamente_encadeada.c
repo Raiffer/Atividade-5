@@ -8,6 +8,14 @@ typedef struct no{
     struct no * ant; 
 }NO;
 
+typedef struct conta{
+    char*nome;
+    int senha;
+    float saldo;
+    struct no * prox;
+    struct no * ant;
+}cont;
+
 NO *inicio = NULL;
 NO *fim = NULL;
 int tam = 0;
