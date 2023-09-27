@@ -28,7 +28,7 @@ void cadastrarConta(char *nome, int senha,int numero, float saldo){
         fim = novo;
     }else{
         cont * aux = inicio;
-        while((aux->saldo > novo->saldo) && (aux->prox != NULL)){
+        while((aux->saldo > novo->saldo) && (aux->prox != fim)){
             aux = aux->prox;
         }
         if((fim == aux) && (aux->saldo >= novo->saldo)){
@@ -46,9 +46,6 @@ void cadastrarConta(char *nome, int senha,int numero, float saldo){
             aux = novo->ant;
             aux->prox = novo;
         }
-    }
-    while (inicio->ant != NULL){
-        inicio = inicio->ant;
     }
 } 
 
