@@ -43,6 +43,40 @@ void play(int ciclo){
     }
 }
 
+void remove_na_playlist(char * n_musica){
+    mus * aux = inicio;
+    mus * lixo;
+    while(n_musica != aux->nome){
+        aux = aux->prox;
+    }  
+    if (aux == inicio){
+        aux = inicio->prox;
+        lixo = aux->ant;
+        aux->ant = lixo->ant;
+        aux = lixo->ant;
+        inicio = lixo->prox;
+        aux->prox = lixo->prox;
+        free (lixo);
+    }else
+    if (aux == fim){
+        aux = fim->prox;
+        lixo = aux->ant;
+        aux->ant = lixo->ant;
+        aux = lixo->ant;
+        fim = lixo->ant;
+        aux->prox = lixo->prox;
+        free (lixo);
+        }
+        else{
+            aux = aux->prox;
+            lixo = aux->ant;
+            aux->ant = lixo->ant;
+            aux->prox = lixo->prox;
+            free (lixo);
+        }
+    }
+
+
 int main(){
     add_na_playlist("Bones","Imagine Dragons",165);
     add_na_playlist("Sharks","Imagine Dragons",165);
