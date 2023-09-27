@@ -1,91 +1,150 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct musica{
+typedef struct conta{
     char*nome;
-    char*cant;
-    int secs;
-    struct musica * prox;
-    struct musica * ant;
-}mus;
+    int numero;
+    int senha;
+    float saldo;
+    struct conta * prox;
+    struct conta * ant;
+}cont;
 
-mus * inicio = NULL;
-mus * fim = NULL;
+cont * inicio = NULL;
+cont * fim = NULL;
 
-void add_na_playlist(char*nome, char*cant, int secs){
-    
-    mus * novo = malloc(sizeof(mus));
+void cadastrarConta(char *nome, int senha,int numero, float saldo){
+
+    cont * novo = malloc(sizeof(cont));
     novo->nome = nome;
-    novo->cant = cant;
-    novo->secs = secs;
-    novo->prox = inicio;
-    novo->ant = fim;
-    
-    if (inicio == NULL){
+    novo->senha = senha;
+    novo->numero = numero;
+    novo->saldo = saldo;
+    novo->prox = NULL;
+    novo->ant = NULL;
+
+    if(inicio == NULL){
         inicio = novo;
         fim = novo;
-    }else {
-        fim->prox = novo;
-        inicio->ant = novo;
-        fim = novo;
-    }
-}
-
-void play(int ciclo){
-    mus * aux = inicio;
-    int count = 0;
-    while( count < ciclo){
-        printf("%s\n", aux->nome);
-        aux = aux->prox;
-        if(aux == inicio){
-            count++;
-        }
-    }
-}
-
-void remove_na_playlist(char * n_musica){
-    mus * aux = inicio;
-    mus * lixo;
-    while(n_musica != aux->nome){
-        aux = aux->prox;
-    }  
-    if (aux == inicio){
-        aux = inicio->prox;
-        lixo = aux->ant;
-        aux->ant = lixo->ant;
-        aux = lixo->ant;
-        inicio = lixo->prox;
-        aux->prox = lixo->prox;
-        free (lixo);
-    }else
-    if (aux == fim){
-        aux = fim->prox;
-        lixo = aux->ant;
-        aux->ant = lixo->ant;
-        aux = lixo->ant;
-        fim = lixo->ant;
-        aux->prox = lixo->prox;
-        free (lixo);
-        }
-        else{
+    }else{
+        cont * aux = inicio;
+        while((aux->saldo > novo->saldo) && (aux->prox != fim)){
             aux = aux->prox;
-            lixo = aux->ant;
-            aux->ant = lixo->ant;
-            aux = lixo->ant;
-            aux->prox = lixo->prox;
-            free (lixo);
+        }
+        if((fim == aux) && (aux->saldo >= novo->saldo)){
+            aux->prox = novo;
+            novo->ant = aux;
+            fim = novo;  
+        }else if (inicio == aux){
+            novo->prox = aux;
+            aux->ant = novo;
+            inicio = novo;
+        }else{
+            novo->prox = aux;
+            novo->ant = aux->ant;  
+            aux->ant = novo;
+            aux = novo->ant;
+            aux->prox = novo;
         }
     }
+} 
 
+void removerConta(int numero){
+    cont * aux = inicio;
+    while((aux->numero != numero) && (aux != NULL)){
+        aux = aux->prox;
+    }
+    if (aux == NULL){
+        printf("Conta nao encontrada.\n");
+    }else if (aux == inicio){
+        inicio = aux->prox;
+        inicio->ant = NULL;
+        free(aux);
+    }else if (aux == fim){
+        fim = aux->ant;
+        fim->prox = NULL;
+        free(aux);
+    }else{
+        cont * lixo = aux;
+        aux = lixo->prox;
+        aux->ant = lixo->ant;
+        aux = lixo->ant;
+        aux->prox = lixo->prox;
+        free(lixo);
+    } 
+}
+
+void depositar(int numero, int senha, float valor){
+    cont * aux = inicio;
+    while ((aux->numero != numero) && (aux != NULL)){
+        aux = aux->prox;
+    }
+    if (aux == NULL){
+        printf("Conta nao encontrada.\n");
+        printf("\n");
+    }else if(aux->senha != senha){
+        printf("Senha Invalida.\n");
+        printf("\n");
+    }else {
+        aux->saldo = aux->saldo + valor;
+        printf("%.2f depositados.\n", valor);
+        printf("\n");
+    }
+}
+
+void sacar(int numero, int senha, float valor){
+    cont * aux = inicio;
+    while ((aux->numero != numero) && (aux != NULL)){
+        aux = aux->prox;
+    }
+    if (aux == NULL){
+        printf("Conta nao encontrada.\n");
+        printf("\n");
+    }else if(aux->senha != senha){
+        printf("Senha Invalida.\n");
+        printf("\n");
+    }else if (valor > aux->saldo){
+        printf("Saldo Insuficiente.\n");
+    }else {
+        aux->saldo = aux->saldo - valor;
+        printf("%.2f sacados.\n", valor);
+        printf("\n");
+    }
+}
+
+void visualizar(){
+    printf("Imprimindo a Lista\n");
+
+    cont * aux = inicio;
+    int count = 1;
+
+    while(aux != NULL){
+        printf("Conta %d.\n",count);
+        printf("Usuario: %s\n", aux->nome);
+        printf("Numero da Conta: %d\n", aux->numero);
+        printf("Saldo: %.2f\n", aux->saldo);
+        aux = aux->prox;
+        count++;
+    }
+    printf("\n");
+
+}
 
 int main(){
-    add_na_playlist("Bones","Imagine Dragons",165);
-    add_na_playlist("Sharks","Imagine Dragons",165);
-    add_na_playlist("Beliver","Imagine Dragons",165);
-    add_na_playlist("Hayloft II","Mother Mother",165);
-    mus * aux = inicio->prox;
-    play(4);
-    remove_na_playlist("Sharks");
-    printf("\n");
-    play(1);
+    
+    cadastrarConta("Bernardo", 1234,553030, 564.45);
+    visualizar();
+    cadastrarConta("Cecilia", 1434,53030, 1000.45);
+    visualizar();
+    cadastrarConta("Catarina", 1424,55610, 1230.45);
+    cadastrarConta("Luiz Renato", 1134,53031, 2000.45);
+    visualizar();
+    removerConta(53030);
+    visualizar();
+    depositar(553030, 1232, 33.90);
+    depositar(553030, 1234, 33.90);
+    visualizar();
+    sacar(553030, 1234, 1133.90);
+    sacar(553030, 1234, 33.90);
+    return 0;
 }

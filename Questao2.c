@@ -71,6 +71,7 @@ void remove_na_playlist(char * n_musica){
             aux = aux->prox;
             lixo = aux->ant;
             aux->ant = lixo->ant;
+            aux = lixo->ant;
             aux->prox = lixo->prox;
             free (lixo);
         }
@@ -83,9 +84,8 @@ int main(){
     add_na_playlist("Beliver","Imagine Dragons",165);
     add_na_playlist("Hayloft II","Mother Mother",165);
     mus * aux = inicio->prox;
-    printf("%s\n", aux->nome);
-    printf("%s\n", inicio->nome);
-    printf("%s\n", fim->nome);
-    printf("\n");
     play(4);
+    remove_na_playlist("Sharks");
+    printf("\n");
+    play(1);
 }
